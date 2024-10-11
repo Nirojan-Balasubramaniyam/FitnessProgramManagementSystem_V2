@@ -15,6 +15,8 @@ namespace FitnessProgramManagementSystem_V2
         {
             try
             {
+                string capitalizeTitle = CapitalizeTitle(title);
+
                 string insertQuery = @"INSERT INTO FitnessPrograms(FitnessProgramId,Title,Duration,Price)
                                    VALUES(@id, @title, @duration, @price);";
                 using (SqlConnection connection = new SqlConnection(DbConnectionString))
@@ -23,7 +25,7 @@ namespace FitnessProgramManagementSystem_V2
                     using (SqlCommand command = new SqlCommand(insertQuery, connection))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        command.Parameters.AddWithValue("@title", title);
+                        command.Parameters.AddWithValue("@title", capitalizeTitle);
                         command.Parameters.AddWithValue("@duration", duration);
                         command.Parameters.AddWithValue("@price", price);
                         command.ExecuteNonQuery();
@@ -44,6 +46,7 @@ namespace FitnessProgramManagementSystem_V2
         {
             try
             {
+                string capitalizeTitle = CapitalizeTitle(title);
                 string updateQuery = @"UPDATE FitnessPrograms SET Title=@title,Duration=@duration,Price=@price WHERE FitnessProgramId=@id;";
                 using (SqlConnection connection = new SqlConnection(DbConnectionString))
                 {
@@ -51,7 +54,7 @@ namespace FitnessProgramManagementSystem_V2
                     using (SqlCommand command = new SqlCommand(updateQuery, connection))
                     {
                         command.Parameters.AddWithValue("@id", id);
-                        command.Parameters.AddWithValue("@title", title);
+                        command.Parameters.AddWithValue("@title", capitalizeTitle);
                         command.Parameters.AddWithValue("@duration", duration);
                         command.Parameters.AddWithValue("@price", price);
                         command.ExecuteNonQuery();
@@ -115,7 +118,6 @@ namespace FitnessProgramManagementSystem_V2
                                 program = new FitnessProgram(programId,title,duration,price);
                             }
                         }
-                        Console.WriteLine("Program deleted successfully");
                     }
                 }
 
@@ -162,6 +164,19 @@ namespace FitnessProgramManagementSystem_V2
             }
             return programList;
 
+        }
+
+        public string CapitalizeTitle(string title)
+        {
+            string[] words = title.Split(' ');
+            for(int i = 0; i < words.Length; i++)
+            {
+                if(words[i].Length > 0)
+                {
+                    words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+                }
+            }
+            return string.Join(" ", words);
         }
     }
 }
